@@ -106,7 +106,7 @@ namespace ExampleRuneAPI
 
             using (var sw = new StreamWriter("./items.json"))
             {
-                sw.WriteLine("[");
+                sw.WriteLine("{");
                 foreach (var kvp in dict)
                 {
                     var pageCount = Math.Ceiling(kvp.Value / 12d);
@@ -124,12 +124,12 @@ namespace ExampleRuneAPI
                         foreach (var item in itemList.Items)
                         {
                             Console.WriteLine($"{item.Name}: {item.Id}");
-                            sw.WriteLine($"    {{\"{item.Name}\": {item.Id}}},");
+                            sw.WriteLine($"    \"{item.Name}\": {item.Id},");
                         }
                         Thread.Sleep(500);
                     }
                 }
-                sw.WriteLine("]");
+                sw.WriteLine("}");
             }
             Console.WriteLine("Done.");
             Console.ReadLine();
