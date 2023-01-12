@@ -1,12 +1,8 @@
 ﻿using RuneAPI;
-using RuneAPI.Containers;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace ExampleRuneAPI
 {
@@ -30,7 +26,10 @@ namespace ExampleRuneAPI
     {
         static void Main(string[] args)
         {
-            ScrapeForDb();
+            if (!File.Exists("./items.json"))
+            {
+                ScrapeForDb();
+            }
 
             var db = File.ReadAllText("./items.json").ToLower();
             var ge = new GrandExchange(db);
@@ -52,7 +51,7 @@ namespace ExampleRuneAPI
                         if (item != null)
                             Console.WriteLine(item.ToString());
                     }
-                    else if(cmdline[0] == "/graph")
+                    else if (cmdline[0] == "/graph")
                     {
                         if (cmdline.Length != 2)
                             continue;
@@ -65,12 +64,12 @@ namespace ExampleRuneAPI
                         if (data == null)
                             continue;
 
-                        foreach(var kvp in data)
+                        foreach (var kvp in data)
                         {
                             Console.WriteLine($"{kvp.Key}: {kvp.Value}");
                         }
                     }
-                    else if(cmdline[0] == "/latest")
+                    else if (cmdline[0] == "/latest")
                     {
                         if (cmdline.Length != 2)
                             continue;
@@ -107,7 +106,7 @@ namespace ExampleRuneAPI
 
             using (var sw = new StreamWriter("./items.json"))
             {
-                sw.WriteLine("{");
+                sw.WriteLine("[");
                 foreach (var kvp in dict)
                 {
                     var pageCount = Math.Ceiling(kvp.Value / 12d);
@@ -119,7 +118,7 @@ namespace ExampleRuneAPI
                         while (itemList == null)
                         {
                             itemList = ge.GetCataloguePage(kvp.Key, i);
-                            Thread.Sleep(1000);
+                            Thread.Sleep(500);
                         }
 
                         foreach (var item in itemList.Items)
@@ -127,10 +126,10 @@ namespace ExampleRuneAPI
                             Console.WriteLine($"{item.Name}: {item.Id}");
                             sw.WriteLine($"    {{\"{item.Name}\": {item.Id}}},");
                         }
-                        Thread.Sleep(1000);
+                        Thread.Sleep(500);
                     }
                 }
-                sw.WriteLine("}");
+                sw.WriteLine("]");
             }
             Console.WriteLine("Done.");
             Console.ReadLine();
